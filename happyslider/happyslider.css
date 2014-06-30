@@ -1,0 +1,44 @@
+.happyslider{
+    position: relative;
+    width: 100%;        
+}
+
+.happyslider-container{
+    overflow: hidden;
+    position: relative;
+    width: 100%;    
+}
+
+.happyslider-wrap{
+    position: absolute;
+    top: 0;
+    left: 0;    
+    font-size: 0;
+    white-space: nowrap;
+    
+    -webkit-backface-visibility: hidden;
+    
+    transition-property: transform,left;
+    transition-duration: 600ms;
+    transition-timing-function: ease;
+    
+    -webkit-transition-property: -webkit-transform,left;
+    -webkit-transition-duration: 600ms;
+    -webkit-transition-timing-function: ease;
+}
+
+.happyslider-item{
+    display: inline-block;        
+}
+
+.happyslider-prev{
+    position: absolute;
+    top: 50%;
+    left: 0;    
+}
+
+.happyslider-next{
+    position: absolute;
+    top: 50%;
+    right: 0;      
+}
