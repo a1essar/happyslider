@@ -1,5 +1,5 @@
 /* ========================================================================
- * HappySlider: happyslider.js v0.1
+ * HappySlider: happyslider.js v1.0
  * ========================================================================
  * Copyright 2013 Happycms.ru
  * Licensed under the MIT license.
@@ -8,217 +8,199 @@
  */
 (function( $ ){
     $.fn.happyslider = function( options ) {  
-        var $this
-        ,   happysliderContainer
-        ,   happysliderWrap
-        ,   happysliderItem
-        ,   happysliderNext
-        ,   happysliderPrev
-        
-        ,   happysliderPagination
-        ,   happysliderPaginationItem
-        
-        ,   happysliderContainerW
-        ,   happysliderWrapW
-        
-        ,   windowW
-        
-        ,   happysliderItemPages
+        /* global var */
+        var $this = this
+        ,   params = {}
         ;
         
-        var settings = $.extend( {
-            pagination: true,
-            paginationNumber: true,
-            mousewheel: true,
-            swipe: true,
-            swipeMobileOnly: false,
-            
-            responsiveBreakpointSm: 768,
-            responsiveBreakpointMd: 992,
-            responsiveBreakpointLg: 1200,
-            
-            responsiveBreakpointXsCol: 1,
-            responsiveBreakpointSmCol: 2,
-            responsiveBreakpointMdCol: 4,
-            responsiveBreakpointLgCol: 6,
-            
-            currentPage: 1,
-            
-            callback: function() {},
+        params.el = $this.selector;
+        params.container = '.js__happyslider-container';
+        params.wrap = '.js__happyslider-wrap';
+        params.item = '.js__happyslider-item';
+        params.previous = '.js__happyslider-previous';
+        params.next = '.js__happyslider-next';
+        params.isAnimate = false;
+        
+        /* custom options */
+        var settings = $.extend({
+            width: $(window).width(),
+            height: $(window).height(),
+            infiniti: false, 
+            animateType: 'slide', /* slide, fade, scale */
+            animateDuration: 1000,
+            animateEase: 'ease', /* css3 timing-function */
+            animateCallback: function($el){
+            },
         }, options);
         
-        function init(){
-            $this = $(this);
+        if(this.data('happyslider-options') !== 'undefined'){
+            settings = $.extend(settings, this.data('happyslider-options'));    
+        }
+        
+        console.log(settings);
+        
+        if(settings.animateType == 'slide'){
+            $this.attr('data-happyslider-animatetype', 'slide');        
+        }
             
-            render();
+        if(settings.animateType == 'fade'){
+            $this.attr('data-happyslider-animatetype', 'fade');        
+        }
+        
+        if(settings.animateType == 'scale'){
+            $this.attr('data-happyslider-animatetype', 'scale');        
+        }
+        
+        /* render sizes and other */
+        function render(index){
+            var index = index || 0
+            ,   $el = $this.eq(index)
+            ,   $container = $el.find(params.container)
+            ,   $wrap = $el.find(params.wrap)
+            ,   $item = $el.find(params.item)
+            ;
+            
+            $el.css('width', settings.width).css('height', settings.height);
+            
+            if(!$item.is('.active')){
+                $item.eq(0).addClass('active');    
+            }
+
+            //console.log('$.fn.happyslider -> render', 'index', index, '$el', $el, '$item', $item);        
+        }
+        
+        function animate(index, slideIndex){
+            if(params.isAnimate){
+                return false;
+            }
+            
+            params.isAnimate = true;
+            
+            var index = index || 0
+            ,   slideIndex = slideIndex || 0
+            ,   $el = $this.eq(index)
+            ,   $container = $el.find(params.container)
+            ,   $wrap = $el.find(params.wrap)
+            ,   $item = $el.find(params.item)
+            ,   itemWidth = $item.width()
+            ,   top = 0
+            ,   left = - itemWidth * slideIndex
+            ;
+            
+            $item.css('transition', 'all ' + settings.animateDuration/1000 + 's ' + settings.animateEase);
+                
+            if(settings.animateType == 'slide'){
+                if(typeof Modernizr != 'undefined' && Modernizr.csstransforms3d && Modernizr.csstransitions){
+                    $item.css('transform' , 'translate3d('+left+'px,'+top+'px, 0px)');    
+                } 
+                
+                else if(typeof Modernizr != 'undefined' && Modernizr.csstransforms && Modernizr.csstransitions){
+                    $item.css('transform' , 'translate('+left+'px,'+top+'px)');   
+                } 
+                
+                else if(typeof Modernizr != 'undefined' && Modernizr.csstransitions){
+                    $item.css('left' , left).css('top' , top);                       
+                }  
+                
+                else{
+                    $item.stop().animate({'left' : left, 'top' : top}, settings.animateDuration, settings.animateEase, function(){    
+                    });  
+                }      
+            }
+            
+            if(settings.animateType == 'fade'){
+                $item.css('opacity', 0);
+                $item.eq(slideIndex).css('opacity', 1);
+            }
+            
+            if(settings.animateType == 'scale'){
+                if(typeof Modernizr != 'undefined' && Modernizr.csstransforms && Modernizr.csstransitions){
+                    $item.filter('.active').css('transform' , 'scale(0, 0)').css('opacity', 0); 
+                    $item.eq(slideIndex).css('transform' , 'scale(1, 1)').css('opacity', 1); 
+                }    
+            }
+            
+            setTimeout(function(){
+                params.isAnimate = false;
+                
+                $item.removeClass('active');
+                $item.eq(slideIndex).addClass('active');
+                $item.css('transition', 'none');
+                
+                if(settings.animateType == 'scale'){
+                    $item.not('.active').css('transform' , 'scale(0, 0)').css('opacity', 0);   
+                }
+
+                settings.animateCallback();    
+            }, settings.animateDuration);
+        }
+        
+        function addEvents(e){
+            if(e.target !== 'undefined'){
+                $(e.selector).on(e.event, e.target, function(event){
+                    e.callback(event);    
+                });     
+            }else{
+                $(e.selector).on(e.event, function(event){
+                    e.callback(event);    
+                });    
+            }
+        }
+        
+        /* plugin initialize */
+        function pluginInitialize(index, el){
+            $this.initializeTime = Date.now();
+            render(index);
+            
+            //console.log('$.fn.happyslider -> pluginInitialize', 'index', index, 'el', el, params.el);
         };
         
-        function render(){
-            happysliderContainer = $this.find('.js__happyslider-container')
-            ,   happysliderWrap = $this.find('.js__happyslider-wrap')
-            ,   happysliderItem = $this.find('.js__happyslider-item')
-
-            ,   happysliderNext = $this.find('.js__happyslider-next')
-            ,   happysliderPrev = $this.find('.js__happyslider-prev')            
-
-            ,   happysliderPagination = $this.find('.js__happyslider-pagination')
-            
-            ,   happysliderContainerW = parseInt(happysliderContainer.css('width'))
-            ,   happysliderWrapW = parseInt(happysliderWrap.outerWidth(true))
-            ,   happysliderWrapH = parseInt(happysliderWrap.outerHeight(true))
-            
-            ,   windowW = $(window).width()
-            
-            ,   happysliderItemPages = Math.ceil(happysliderWrapW/happysliderContainerW) - 1
-            ,   happysliderItemSize = happysliderItem.length
-            ;
-
-            happysliderContainer
-            .css('height', happysliderWrapH);    
-            
-            renderResponsiveContainer();
-            
-            happysliderNext.off('click.happyslider').on('click.happyslider', slideNext);
-            happysliderPrev.off('click.happyslider').on('click.happyslider', slidePrev);
-            
-            if(settings.pagination == true){
-                renderPagination();
-            }   
-            
-            if(settings.mousewheel == true){
-                happysliderContainer.off('mousewheel.happyslider').on('mousewheel.happyslider', slideMousewheel);    
+        /* handle events for resizes */
+        addEvents({
+            selector: window,
+            event: 'load.happyslider resize.happyslider orientationchange.happyslider',
+            callback: function(){
+                $this.each(render); 
             }
-            
-            if(settings.swipe == true && settings.swipeMobileOnly == true && typeof Modernizr != 'undefined' && Modernizr.touch || settings.swipe == true && settings.swipeMobileOnly == false){
-                happysliderContainer.off('swipeleft.happyslider').on('swipeleft.happyslider', slideNext); 
-                happysliderContainer.off('swiperight.happyslider').on('swiperight.happyslider', slidePrev);    
-            }
-        }
-        
-        function renderResponsiveContainer(){
-            if(windowW < settings.responsiveBreakpointSm){
-                happysliderItem.css('width', happysliderContainerW/settings.responsiveBreakpointXsCol);
-            }
-            
-            if(windowW >= settings.responsiveBreakpointSm && windowW < settings.responsiveBreakpointMd){
-                happysliderItem.css('width', happysliderContainerW/settings.responsiveBreakpointSmCol);
-            }
-            
-            if(windowW >= settings.responsiveBreakpointMd && windowW < settings.responsiveBreakpointLg){
-                happysliderItem.css('width', happysliderContainerW/settings.responsiveBreakpointMdCol);
-            }
-            
-            if(windowW >= settings.responsiveBreakpointLg){
-                happysliderItem.css('width', happysliderContainerW/settings.responsiveBreakpointLgCol);
-            }            
-            
-            slide();
-        }
-        
-        function renderPagination(){
-            if(happysliderPagination.length <= 0){
-                $this.append('<div class="js__happyslider-pagination happyslider-pagination"></div>');    
-            }
-            
-            happysliderPagination.html('');
-            
-            for(var i = 0; i <= happysliderItemPages; i++){
-                if(settings.paginationNumber == true){
-                    happysliderPagination.append('<div class="js__happyslider-pagination-item happyslider-pagination-item">'+parseInt(i+1)+'</div>');  
-                }else{
-                    happysliderPagination.append('<div class="js__happyslider-pagination-item happyslider-pagination-item"></div>');    
-                }
-            }
-            
-            updadePaginationItemState();
-            happysliderPaginationItem.on('click.happyslider', slidePagination);
-        }
-        
-        function updadePaginationItemState(){
-            happysliderPaginationItem = $this.find('.js__happyslider-pagination-item');
-            
-            happysliderPaginationItem.removeClass('active');
-            happysliderPaginationItem.eq(settings.currentPage).addClass('active');            
-        }
-        
-        function slide(){
-            if(happysliderWrap.is(':animated')){
-                return false;
-            }
-            
-            if(happysliderPagination.length > 0){
-                updadePaginationItemState();                
-            }
-            
-            if(settings.currentPage > happysliderItemPages){
-                settings.currentPage = happysliderItemPages;
-                updadePaginationItemState();
-            }
-            
-            var slideOffset = -settings.currentPage * happysliderContainerW;
-            
-            if(typeof Modernizr != 'undefined' && Modernizr.csstransforms3d){
-                happysliderWrap.css('transform', 'translate3d('+slideOffset+'px,0,0)'); 
-                return true;     
-            } 
-            
-            if(typeof Modernizr != 'undefined' && Modernizr.csstransforms){
-                happysliderWrap.css('transform', 'translate('+slideOffset+'px,0)'); 
-                return true;     
-            } 
-            
-            if(typeof Modernizr != 'undefined' && Modernizr.csstransitions){
-                happysliderWrap.css('left', slideOffset); 
-                return true;     
-            }  
-            
-            happysliderWrap.animate({'left': slideOffset}, 1000, 'swing', function(){
-                return true;     
-            }); 
-                
-        }
-        
-        function slideNext(e){
-            e.preventDefault();
-            
-            if(settings.currentPage>=happysliderItemPages){
-                return false;
-            }
-            
-            settings.currentPage++;
-            slide();
-        }
-        
-        function slidePrev(e){
-            e.preventDefault();
-            
-            if(settings.currentPage<=0){
-                return false;
-            }
-            
-            settings.currentPage--;
-            slide();
-        }
-        
-        function slidePagination(e){
-            e.preventDefault(); 
-            
-            settings.currentPage = $(e.currentTarget).index('.js__happyslider-pagination-item');
-            slide();
-        }
-        
-        function slideMousewheel(e){
-            if(e.deltaY < 1){
-                slideNext(e);
-            }else{
-                slidePrev(e);    
-            }
-        }
-        
-        $(window).on('load resize orientationchange', function(){
-            render(); 
         });
         
-        return this.each(init);
+        addEvents({
+            selector: 'body',
+            event: 'click.happyslider',
+            target: params.el + ' ' + params.previous + ', ' + params.el + ' ' + params.next,
+            callback: function(event){
+                var $el = $(event.target).closest(params.el)
+                ,   $item = $el.find(params.item)
+                ,   index = $el.index(params.el)
+                ,   slideIndex = $item.index($item.filter('.active'))
+                ;
+                
+                if(!settings.infiniti && $(event.target).is(params.previous) && slideIndex > 0){
+                    slideIndex--;    
+                }
+                
+                if(!settings.infiniti && $(event.target).is(params.next) && slideIndex < $item.length - 1){
+                    slideIndex++;    
+                }
+    
+                animate(index, slideIndex);
+                
+                //console.log('$.fn.happyslider -> click.happyslider', 'params.el', params.el);                   
+            }
+        });
+        
+        //console.log('$.fn.happyslider ->', 'params.el', params.el);
+        
+        return this.each(pluginInitialize);
     };
+    
+    function dataInit(){
+        if($('[data-happyslider]').length > 0){
+            $('[data-happyslider]').happyslider();
+        }
+    }
+    
+    $(function() {
+        dataInit();
+    });
 })( jQuery );

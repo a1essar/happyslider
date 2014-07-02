@@ -1,22 +1,24 @@
 .happyslider{
     position: relative;
-    width: 100%;        
+    width: 100%;  
+    height: auto;      
 }
 
 .happyslider-container{
     overflow: hidden;
     position: relative;
-    width: 100%;    
+    width: 100%;  
+    height: inherit;  
 }
 
 .happyslider-wrap{
-    position: absolute;
-    top: 0;
-    left: 0;    
+    width: auto;
+    height: inherit;
     font-size: 0;
     white-space: nowrap;
     
     -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
     
     transition-property: transform,left;
     transition-duration: 600ms;
@@ -28,17 +30,73 @@
 }
 
 .happyslider-item{
-    display: inline-block;        
+    display: inline-block;    
+    vertical-align: top;   
+    width: 100%;
+    height: 100%; 
 }
 
-.happyslider-prev{
+.happyslider[data-happyslider-animatetype="fade"] .happyslider-item.active{
+    z-index: 3;
+    position: absolute;
+    top: 0;
+    left: 0;
+    opacity: 1;
+}
+
+.happyslider[data-happyslider-animatetype="fade"] .happyslider-item:not(.active){
+    z-index: 1;
+    position: absolute;
+    top: 0;
+    left: 0;
+    opacity: 0;
+}
+
+.happyslider[data-happyslider-animatetype="scale"] .happyslider-item.active{
+    overflow: hidden;
+    z-index: 3;
+    position: absolute;
+    top: 0;
+    left: 0;
+    opacity: 1;
+}
+
+.happyslider[data-happyslider-animatetype="scale"] .happyslider-item:not(.active){
+    overflow: hidden;
+    z-index: 1;
+    position: absolute;
+    top: 0;
+    left: 0;
+    opacity: 0;
+    
+    -webkit-transform: scale(0, 0);
+    transform: scale(0, 0);
+}
+
+.happyslider-previous,
+.happyslider-next{
+    cursor: pointer;
+    z-index: 10;
     position: absolute;
     top: 50%;
+    right: 0;
+    width: 32px;
+    height: 32px;
+    text-align: center;
+    line-height: 32px;
+    background: rgb(255, 255, 255);
+    margin: -16px 0 0 0;
+    
+    -webkit-user-select: none;  /* Chrome all / Safari all */
+    -moz-user-select: none;     /* Firefox all */
+    -ms-user-select: none;      /* IE 10+ */
+    user-select: none; 
+}
+
+.happyslider-previous{
     left: 0;    
 }
 
 .happyslider-next{
-    position: absolute;
-    top: 50%;
     right: 0;      
 }
