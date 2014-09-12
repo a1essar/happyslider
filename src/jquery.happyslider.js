@@ -54,6 +54,11 @@
         this.startPos = 0;
         this.slideIndex = 0;  
         this.itemSize = [];
+
+        this.oldie = false;
+        if(isIE() <= 9 && isIE() !== false){
+            this.oldie = true;
+        }
         
         this.options = $.extend( {
         }, defaults, options, $(this.element).data('happyslider-options')) ;
@@ -186,7 +191,7 @@
             }  
                 
             else{
-                this.$item.stop().animate({'left' : left, 'top' : top}, this.options.animateDuration, this.options.animateEase, function(){    
+                this.$item.stop().animate({'left' : left, 'top' : top}, this.options.animateDuration, 'swing', function(){
                 });  
             }                 
         },
@@ -235,7 +240,7 @@
                 this.$item.css('transform' , 'translate3d('+left+'px,'+top+'px, 0px)');    
             }        
             
-            else if(typeof Modernizr != 'undefined' && Modernizr.csstransforms){
+            else if(typeof Modernizr != 'undefined' && Modernizr.csstransforms && !this.oldie){
                 this.$item.css('transform' , 'translate('+left+'px,'+top+'px)');   
             } 
                 
@@ -419,6 +424,12 @@
         if($('[data-happyslider]').length > 0){
             $('[data-happyslider]').happyslider();
         }
+    }
+
+    /*http://stackoverflow.com/questions/10964966/detect-ie-version-in-javascript*/
+    function isIE(){
+        var myNav = navigator.userAgent.toLowerCase();
+        return (myNav.indexOf('msie') != -1) ? parseInt(myNav.split('msie')[1]) : false;
     }
     
     $(function() {
