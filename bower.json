@@ -1,0 +1,33 @@
+{
+  "name": "happyslider",
+  "description": "",
+  "version": "1.4.0",
+  "keywords": [
+    "css",
+    "js",
+    "front-end"
+  ],
+  "homepage": "https://github.com/a1essar/happyslider",
+  "main": [
+    "src/happyslider.css",
+    "src/jquery.happyslider.js",
+    "happyslider.min.css",
+    "happyslider.min.css.map",
+    "jquery.happyslider.min.js",
+    "jquery.happyslider.min.js.map"
+  ],
+  "ignore": [
+    "example",
+    "/.*",
+    "CNAME",
+    "CONTRIBUTING.md",
+    "docs",
+    "bower.json",
+    "gulpfile.js",
+    "package.json",
+    "README.md"
+  ],
+  "dependencies": {
+    "jquery": ">= 2.1.1"
+  }
+}

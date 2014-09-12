@@ -1,0 +1,269 @@
+.happyslider{
+    overflow: hidden;
+    position: relative;
+    width: 100%;
+    height: auto;
+
+    transition: height 300ms linear;
+}
+
+.happyslider.grab{
+    cursor: -moz-grab;
+    cursor: -o-grab;
+    cursor: -ms-grab;
+    cursor: grab;
+}
+
+.happyslider.grabbing{
+    cursor: -moz-grabbing;
+    cursor: -o-grabbing;
+    cursor: -ms-grabbing;
+    cursor: grabbing;
+}
+
+.happyslider-container{
+    overflow: hidden;
+    position: relative;
+    width: 100%;
+    height: inherit;
+}
+
+.happyslider-wrap{
+    width: auto;
+    height: inherit;
+    font-size: 0;
+    white-space: nowrap;
+
+    box-shadow: inset 0 0 9px 0 rgba(0, 0, 0, 0.3);
+
+    backface-visibility: hidden;
+}
+
+.happyslider-item{
+    display: inline-block;
+    vertical-align: top;
+    width: 100%;
+    height: 100%;
+    background-repeat: no-repeat;
+    background-position: 0 0;
+    background-size: cover;
+
+    user-select: none;
+}
+
+.happyslider-item img{
+    pointer-events: none;
+    width: 100%;
+}
+
+.happyslider[data-happyslider-animatetype="fade"] .happyslider-item.active{
+    z-index: 3;
+    position: absolute;
+    top: 0;
+    left: 0;
+    opacity: 1;
+}
+
+.happyslider[data-happyslider-animatetype="fade"] .happyslider-item:not(.active){
+    z-index: 1;
+    position: absolute;
+    top: 0;
+    left: 0;
+    opacity: 0;
+}
+
+.happyslider[data-happyslider-animatetype="scale"] .happyslider-item.active{
+    overflow: hidden;
+    z-index: 3;
+    position: absolute;
+    top: 0;
+    left: 0;
+    opacity: 1;
+}
+
+.happyslider[data-happyslider-animatetype="scale"] .happyslider-item:not(.active){
+    overflow: hidden;
+    z-index: 1;
+    position: absolute;
+    top: 0;
+    left: 0;
+    opacity: 0;
+
+    transform: scale(0, 0);
+}
+
+.happyslider-previous,
+.happyslider-next{
+    cursor: pointer;
+    z-index: 10;
+    position: absolute;
+    top: 50%;
+    right: 0;
+    width: 80px;
+    height: 80px;
+    text-align: center;
+    line-height: 40px;
+    margin: -40px 0 0 0;
+
+    transition: opacity 300ms ease;
+    opacity: 1;
+
+    user-select: none;
+}
+
+.happyslider-previous{
+    left: 0;
+}
+
+.happyslider-next{
+    right: 0;
+}
+
+.happyslider-next.dissable,
+.happyslider-previous.dissable{
+    pointer-events: none;
+    opacity: 0.2;
+}
+
+.happyslider-previous:before{
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 3px;
+    height: 50%;
+    background: rgba(255, 255, 255, 1);
+    -webkit-transition: -webkit-transform 300ms ease;
+    transition: transform 300ms ease;
+    box-shadow: -2px -2px 4px 0px rgba(0, 0, 0, 0.5);
+    backface-visibility: hidden;
+
+    transform: rotate(-135deg);
+    transform-origin: 50% 0%;
+}
+
+.happyslider-previous:after{
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 3px;
+    height: 50%;
+    background: rgba(255, 255, 255, 1);
+    -webkit-transition: -webkit-transform 300ms ease;
+    transition: transform 300ms ease;
+    box-shadow: -2px 2px 4px 0px rgba(0, 0, 0, 0.5);
+    backface-visibility: hidden;
+
+    transform: translate(0px,0px) rotate(-45deg);
+    transform-origin: 0 0;
+}
+
+html:not(.touch) .happyslider-previous:hover:before,
+.happyslider-previous.active:before{
+    transform: translate(-15px,0px) rotate(-125deg);
+}
+
+html:not(.touch) .happyslider-previous:hover:after,
+.happyslider-previous.active:after{
+    transform: translate(-15px,0px) rotate(-55deg);
+}
+
+.happyslider-next:before{
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 3px;
+    height: 50%;
+    background: rgba(255, 255, 255, 1);
+    -webkit-transition: -webkit-transform 300ms ease;
+    transition: transform 300ms ease;
+    box-shadow: 2px -2px 4px 0px rgba(0, 0, 0, 0.5);
+    backface-visibility: hidden;
+
+    transform: translate(0px,0px) rotate(135deg);
+    transform-origin: 50% 0%;
+}
+
+.happyslider-next:after{
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 3px;
+    height: 50%;
+    background: rgba(255, 255, 255, 1);
+    -webkit-transition: -webkit-transform 300ms ease;
+    transition: transform 300ms ease;
+    box-shadow: 2px 2px 4px 0px rgba(0, 0, 0, 0.5);
+    backface-visibility: hidden;
+
+    transform: translate(0px,0px) rotate(45deg);
+    transform-origin: 100% 0;
+}
+
+html:not(.touch) .happyslider-next:hover:before,
+.happyslider-next.active:before{
+    transform: translate(15px,0px) rotate(125deg);
+}
+
+html:not(.touch) .happyslider-next:hover:after,
+.happyslider-next.active:after{
+    transform: translate(15px,0px) rotate(55deg);
+}
+
+/*!
+Animate.css - http://daneden.me/animate
+Licensed under the MIT license - http://opensource.org/licenses/MIT
+
+Copyright (c) 2014 Daniel Eden
+*/
+
+.animated {
+  animation-duration: 1s;
+  animation-fill-mode: both;
+}
+
+.animated.hinge {
+  animation-duration: 2s;
+}
+
+@-webkit-keyframes shake {
+  0%, 100% {
+    -webkit-transform: translate3d(0, 0, 0);
+    transform: translate3d(0, 0, 0);
+  }
+
+  10%, 30%, 50%, 70%, 90% {
+    -webkit-transform: translate3d(-10px, 0, 0);
+    transform: translate3d(-10px, 0, 0);
+  }
+
+  20%, 40%, 60%, 80% {
+    -webkit-transform: translate3d(10px, 0, 0);
+    transform: translate3d(10px, 0, 0);
+  }
+}
+
+@keyframes shake {
+  0%, 100% {
+    -webkit-transform: translate3d(0, 0, 0);
+    transform: translate3d(0, 0, 0);
+  }
+
+  10%, 30%, 50%, 70%, 90% {
+    -webkit-transform: translate3d(-10px, 0, 0);
+    transform: translate3d(-10px, 0, 0);
+  }
+
+  20%, 40%, 60%, 80% {
+    -webkit-transform: translate3d(10px, 0, 0);
+    transform: translate3d(10px, 0, 0);
+  }
+}
+
+.shake {
+  -webkit-animation-name: shake;
+  animation-name: shake;
+}
