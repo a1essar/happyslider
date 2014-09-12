@@ -119,7 +119,9 @@
         },
         
         slide: function(index) {
-            this.slideIndex = index || this.slideIndex;
+            if(index !== 'undefined' && !isNaN(index)){
+                this.slideIndex = index * 1;
+            }
 
             if(this.isAnimate){
                 return false;
