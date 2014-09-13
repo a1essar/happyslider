@@ -176,7 +176,7 @@
         },
         
         animationSlide: function(){
-            var itemWidth = this.$item.width()
+            var itemWidth = this.$item.outerWidth(true)
             ,   top = 0
             ,   left = - itemWidth * this.slideIndex
             
@@ -220,7 +220,7 @@
         
         touchmove: function(position){
             var itemLength = this.$item.length
-            ,   itemWidth = this.$item.width()
+            ,   itemWidth = this.$item.outerWidth(true)
             ,   slideIndex = this.$item.index(this.$item.filter('.active'))
             ,   offsetRight
             ,   offsetLeft
