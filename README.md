@@ -1,2 +1,3 @@
 happyslider
 ===========
+Work in progress
