@@ -69,6 +69,7 @@
         this.init();
 
         this.slide = this.slide;
+        this.update = this.update;
 
         this.bindMethods();
         this.bindEventListeners();
@@ -90,6 +91,10 @@
             }
             
             this.render();    
+        },
+
+        update: function() {
+            this.$item = $(this.element).find('.js__happyslider-item');
         },
 
         render: function() {
@@ -130,7 +135,7 @@
             this.isAnimate = true;
             
             var that = this;
-            
+
             if(this.slideIndex == 'undefined'){
                 this.slideIndex = this.$item.index(this.$item.filter('.active'));
             }
@@ -171,7 +176,8 @@
                 
                 that.animationScaleCallback();
                 that.options.animateCallback();
-                that.draw();    
+                that.draw();
+
             }, that.options.animateDuration);            
         },
         
@@ -219,6 +225,10 @@
         },
         
         touchmove: function(position){
+            if(!this.options.swipe){
+                return false;
+            }
+
             var itemLength = this.$item.length
             ,   itemWidth = this.$item.outerWidth(true)
             ,   slideIndex = this.$item.index(this.$item.filter('.active'))
@@ -229,7 +239,7 @@
             ;  
             
             this.$item.css('transition', 'none');
-            
+
             position.x = position.x - this.$element.position().left;
             position.y = position.y - this.$element.position().top;
             
